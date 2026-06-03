@@ -509,6 +509,8 @@ details[open] .suggested-header::before {
 .new-chat-btn {
     display: block;
     width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
     background: none;
     border: none;
     cursor: pointer;
@@ -522,10 +524,10 @@ details[open] .suggested-header::before {
     margin-bottom: 0.75rem;
     transition: color 0.2s ease;
     outline: none;
+    box-shadow: none;
 }
 
-.new-chat-btn:hover,
-.new-chat-btn:focus {
+.new-chat-btn:hover {
     color: var(--primary-color);
 }
 
