@@ -30,6 +30,14 @@ function setupEventListeners() {
     });
     
     
+    // New chat button
+    document.getElementById('newChatBtn').addEventListener('click', async () => {
+        if (currentSessionId) {
+            await fetch(`${API_URL}/session/${currentSessionId}`, { method: 'DELETE' });
+        }
+        createNewSession();
+    });
+
     // Suggested questions
     document.querySelectorAll('.suggested-item').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -122,10 +130,18 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     let html = `<div class="message-content">${displayContent}</div>`;
     
     if (sources && sources.length > 0) {
+        const sourceLinks = sources.map(source => {
+            const label = typeof source === 'object' ? source.label : source;
+            const url   = typeof source === 'object' ? source.url  : null;
+            if (url) {
+                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;
+            }
+            return `<span>${escapeHtml(label)}</span>`;
+        }).join('');
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${sourceLinks}</div>
             </details>
         `;
     }
