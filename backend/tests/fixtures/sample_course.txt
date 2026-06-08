@@ -1,0 +1,11 @@
+Course Title: Test Course
+Course Link: https://example.com/course
+Course Instructor: Test Instructor
+
+Lesson 0: Introduction
+Lesson Link: https://example.com/lesson0
+This is the content of lesson 0. It covers the basics of the topic.
+
+Lesson 1: Advanced Topics
+Lesson Link: https://example.com/lesson1
+This lesson covers advanced material in detail. There is a lot to learn here.
