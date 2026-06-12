@@ -1,6 +1,32 @@
 // API base URL - use relative path to work from any host
 const API_URL = '/api';
 
+// Theme management — data-theme attribute on <html> drives all CSS variable switching
+function getInitialTheme() {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        const next = theme === 'light' ? 'dark' : 'light';
+        btn.setAttribute('aria-label', `Switch to ${next} mode`);
+        btn.setAttribute('title', `Switch to ${next} mode`);
+    }
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'light' ? 'dark' : 'light');
+}
+
+// Apply before DOM is fully ready to prevent a flash of the wrong theme
+applyTheme(getInitialTheme());
+
 // Global state
 let currentSessionId = null;
 
@@ -23,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Event Listeners
 function setupEventListeners() {
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
     // Chat functionality
     sendButton.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', (e) => {
