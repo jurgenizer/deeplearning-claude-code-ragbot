@@ -34,6 +34,7 @@ def tool_manager(search_tool):
 
 # --- Tool definition schema ---
 
+
 def test_search_tool_definition_schema(search_tool):
     defn = search_tool.get_tool_definition()
     assert defn["name"] == "search_course_content"
@@ -52,6 +53,7 @@ def test_outline_tool_definition_schema(outline_tool):
 
 
 # --- ToolManager registration and execution ---
+
 
 def test_tool_manager_register_and_list(tool_manager, search_tool):
     defs = tool_manager.get_tool_definitions()
@@ -87,6 +89,7 @@ def test_tool_manager_reset_clears_sources(tool_manager, mock_store):
 
 # --- CourseSearchTool behaviour ---
 
+
 def test_search_tool_deduplicates_sources_by_label(search_tool, mock_store):
     # Two results from same course+lesson → only one source entry
     mock_store.search.return_value = make_search_results(
@@ -115,6 +118,7 @@ def test_search_tool_handles_error_results(search_tool, mock_store):
 
 # --- CourseOutlineTool behaviour ---
 
+
 def test_outline_tool_returns_formatted_outline(outline_tool, mock_store):
     mock_store.get_course_outline.return_value = {
         "title": "Test Course",
@@ -137,6 +141,7 @@ def test_outline_tool_handles_missing_course(outline_tool, mock_store):
 
 
 # --- ToolManager validation ---
+
 
 def test_register_tool_without_name_raises():
     class BadTool(CourseSearchTool):

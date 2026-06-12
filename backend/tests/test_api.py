@@ -2,7 +2,6 @@ import pytest
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 
-
 RAG_MODULE = "app.rag_system"
 
 
@@ -10,7 +9,10 @@ RAG_MODULE = "app.rag_system"
 def mock_rag():
     """Patch the global rag_system in app.py so no real ChromaDB or API is used."""
     mock = MagicMock()
-    mock.query.return_value = ("This is the answer.", [{"label": "Source 1", "url": "https://example.com"}])
+    mock.query.return_value = (
+        "This is the answer.",
+        [{"label": "Source 1", "url": "https://example.com"}],
+    )
     mock.get_course_analytics.return_value = {
         "total_courses": 2,
         "course_titles": ["Course A", "Course B"],
@@ -24,10 +26,12 @@ def mock_rag():
 def client(mock_rag):
     with patch(RAG_MODULE, mock_rag):
         import app as application
+
         yield TestClient(application.app)
 
 
 # --- POST /api/query ---
+
 
 def test_query_returns_200_with_answer(client):
     response = client.post("/api/query", json={"query": "What is RAG?"})
@@ -46,7 +50,9 @@ def test_query_without_session_id_creates_one(client):
 
 def test_query_with_session_id_uses_it(client, mock_rag):
     mock_rag.query.return_value = ("Answer.", [])
-    response = client.post("/api/query", json={"query": "Hi", "session_id": "session_42"})
+    response = client.post(
+        "/api/query", json={"query": "Hi", "session_id": "session_42"}
+    )
     assert response.status_code == 200
     assert response.json()["session_id"] == "session_42"
     # Ensure query was called with the provided session_id
@@ -60,6 +66,7 @@ def test_query_exception_returns_500(client, mock_rag):
 
 
 # --- GET /api/courses ---
+
 
 def test_courses_endpoint_returns_stats(client):
     response = client.get("/api/courses")
@@ -76,6 +83,7 @@ def test_courses_endpoint_exception_returns_500(client, mock_rag):
 
 
 # --- DELETE /api/session/{session_id} ---
+
 
 def test_delete_session_returns_200(client, mock_rag):
     response = client.delete("/api/session/session_1")

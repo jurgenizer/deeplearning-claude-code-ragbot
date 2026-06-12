@@ -103,7 +103,9 @@ def test_chunk_text_produces_overlap(document_processor):
     assert any(w in second_chunk_words for w in last_words_of_first)
 
 
-def test_chunk_counter_increments_across_lessons(document_processor, sample_course_file):
+def test_chunk_counter_increments_across_lessons(
+    document_processor, sample_course_file
+):
     _, chunks = document_processor.process_course_document(sample_course_file)
     indices = [c.chunk_index for c in chunks]
     # All indices should be unique
