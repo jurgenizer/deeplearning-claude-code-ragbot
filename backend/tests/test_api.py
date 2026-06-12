@@ -1,33 +1,4 @@
-import pytest
-from unittest.mock import patch, MagicMock
-from fastapi.testclient import TestClient
-
-RAG_MODULE = "app.rag_system"
-
-
-@pytest.fixture
-def mock_rag():
-    """Patch the global rag_system in app.py so no real ChromaDB or API is used."""
-    mock = MagicMock()
-    mock.query.return_value = (
-        "This is the answer.",
-        [{"label": "Source 1", "url": "https://example.com"}],
-    )
-    mock.get_course_analytics.return_value = {
-        "total_courses": 2,
-        "course_titles": ["Course A", "Course B"],
-    }
-    mock.session_manager.create_session.return_value = "session_1"
-    mock.session_manager.clear_session = MagicMock()
-    return mock
-
-
-@pytest.fixture
-def client(mock_rag):
-    with patch(RAG_MODULE, mock_rag):
-        import app as application
-
-        yield TestClient(application.app)
+# client and mock_rag fixtures are provided by conftest.py
 
 
 # --- POST /api/query ---
@@ -55,7 +26,6 @@ def test_query_with_session_id_uses_it(client, mock_rag):
     )
     assert response.status_code == 200
     assert response.json()["session_id"] == "session_42"
-    # Ensure query was called with the provided session_id
     mock_rag.query.assert_called_once_with("Hi", "session_42")
 
 
