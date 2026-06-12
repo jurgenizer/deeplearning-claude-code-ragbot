@@ -2,11 +2,13 @@ import pytest
 from models import Course, Lesson, CourseChunk
 from vector_store import VectorStore
 
-
 # --- Helpers ---
 
+
 def make_full_course(title="Full Course"):
-    lesson = Lesson(lesson_number=0, title="Intro", lesson_link="https://example.com/l0")
+    lesson = Lesson(
+        lesson_number=0, title="Intro", lesson_link="https://example.com/l0"
+    )
     return Course(
         title=title,
         course_link="https://example.com/course",
@@ -26,6 +28,7 @@ def make_chunk(course_title="Full Course", lesson_number=0, idx=0):
 
 # --- add_course_metadata ---
 
+
 def test_add_course_metadata_full(vector_store):
     course = make_full_course()
     vector_store.add_course_metadata(course)
@@ -34,7 +37,9 @@ def test_add_course_metadata_full(vector_store):
 
 def test_add_course_metadata_none_instructor(vector_store):
     """Bug A: ChromaDB rejects None in metadata — instructor=None must not crash."""
-    course = Course(title="No Instructor", course_link="https://example.com", instructor=None)
+    course = Course(
+        title="No Instructor", course_link="https://example.com", instructor=None
+    )
     vector_store.add_course_metadata(course)  # should not raise
     assert vector_store.get_course_count() == 1
 
@@ -54,6 +59,7 @@ def test_add_course_metadata_all_none_optional(vector_store):
 
 
 # --- add_course_content ---
+
 
 def test_add_course_content_with_lesson_number(vector_store):
     chunk = make_chunk()
@@ -77,6 +83,7 @@ def test_add_course_content_empty_list(vector_store):
 
 # --- get_existing_course_titles / get_course_count ---
 
+
 def test_get_existing_course_titles_empty(vector_store):
     titles = vector_store.get_existing_course_titles()
     assert isinstance(titles, list)
@@ -97,6 +104,7 @@ def test_get_course_count(vector_store):
 
 
 # --- search ---
+
 
 def test_search_returns_results(vector_store):
     course = make_full_course()
@@ -127,6 +135,7 @@ def test_search_with_course_filter(vector_store):
 
 # --- get_course_outline / get_lesson_link ---
 
+
 def test_get_course_outline(vector_store):
     course = make_full_course()
     vector_store.add_course_metadata(course)
@@ -151,6 +160,7 @@ def test_get_lesson_link_nonexistent_course(vector_store):
 
 # --- clear_all_data ---
 
+
 def test_clear_all_data(vector_store):
     vector_store.add_course_metadata(make_full_course())
     assert vector_store.get_course_count() == 1
@@ -160,7 +170,10 @@ def test_clear_all_data(vector_store):
 
 # --- round-trip: processor → store → search ---
 
-def test_round_trip_processor_to_store(vector_store, document_processor, sample_course_file):
+
+def test_round_trip_processor_to_store(
+    vector_store, document_processor, sample_course_file
+):
     """Full pipeline: parse a file, store it, then search it."""
     course, chunks = document_processor.process_course_document(sample_course_file)
     vector_store.add_course_metadata(course)

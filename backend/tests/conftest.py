@@ -10,7 +10,6 @@ from document_processor import DocumentProcessor
 from session_manager import SessionManager
 from vector_store import VectorStore
 
-
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
 
 
@@ -40,8 +39,12 @@ def sample_course_file():
 
 @pytest.fixture
 def full_course():
-    lesson0 = Lesson(lesson_number=0, title="Introduction", lesson_link="https://example.com/l0")
-    lesson1 = Lesson(lesson_number=1, title="Advanced", lesson_link="https://example.com/l1")
+    lesson0 = Lesson(
+        lesson_number=0, title="Introduction", lesson_link="https://example.com/l0"
+    )
+    lesson1 = Lesson(
+        lesson_number=1, title="Advanced", lesson_link="https://example.com/l1"
+    )
     return Course(
         title="Test Course",
         course_link="https://example.com/course",
